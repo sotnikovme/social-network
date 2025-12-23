@@ -1,10 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import User
-from app.schemas import UserData, ForUserRead, ReadUserParams, UpdateUserName, UpdateUserAge, UpdateUserEmail
-from app.crud.crud_user import create_user, find_user, delete_user, find_user_by_id, update_user
+from app.models import Post, User
+from app.schemas import UserData, ForUserRead, ReadUserParams, UpdateUserName, UpdateUserAge, UpdateUserEmail, AllPostData
+from app.crud.crud_user import create_user, find_user, delete_user, find_user_by_id, update_user, user_s_posts_by_user_id
 from app.database import get_session
+from app.secur import create_access_token, get_password_hash, verify_password
+from app.schemas import UserLogin, Token
+from app.crud.crud_user import authenticate_user
 
 router = APIRouter(prefix="/user", tags=["user"])
 
@@ -92,9 +96,10 @@ async def user_delete(
         )
 
 
-@router.patch("/user_{user_id}/update_name", response_model=UserData)
+@router.patch("/user_{user_id}/{password}/update_name", response_model=UserData)
 async def user_update_name(
     user_id: int,
+    user_password: str,
     update_data: UpdateUserName,
     session: AsyncSession = Depends(get_session)
 ) -> UserData:
@@ -109,25 +114,27 @@ async def user_update_name(
     if not user_update:
         return db_user
 
-    try:
-        new_user_data = await update_user(session=session, user_id=user_id, update_data=user_update)
-        if new_user_data is None:
+    if db_user.password == user_password:
+        try:
+            new_user_data = await update_user(session=session, user_id=user_id, update_data=user_update)
+            if new_user_data is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Не удалось обновить пользователя"
+                )
+                        
+            return new_user_data
+        except Exception as e:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Не удалось обновить пользователя"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Ошибка обновления пользователя: {str(e)}"
             )
-                    
-        return new_user_data
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Ошибка обновления пользователя: {str(e)}"
-        )
 
 
-@router.patch("/user_{user_id}/update_email", response_model=UserData)
+@router.patch("/user_{user_id}/{password}/update_email", response_model=UserData)
 async def user_update_email(
     user_id: int,
+    user_password: int,
     update_data: UpdateUserEmail,
     session: AsyncSession = Depends(get_session)
 ) -> UserData:
@@ -140,27 +147,28 @@ async def user_update_email(
         )
     user_update = update_data.model_dump(exclude_unset=True)
     if not update_data:
-        return db_user
-
-    try:
-        new_user_data = await update_user(session=session, user_id=user_id, update_data=user_update)
-        if new_user_data is None:
+        return db_user  
+    if db_user.password == user_password:
+        try:
+            new_user_data = await update_user(session=session, user_id=user_id, update_data=user_update)
+            if new_user_data is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Не удалось обновить пользователя"
+                )
+                        
+            return new_user_data
+        except Exception as e:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Не удалось обновить пользователя"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Ошибка обновления пользователя: {str(e)}"
             )
-                    
-        return new_user_data
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Ошибка обновления пользователя: {str(e)}"
-        )
 
 
-@router.patch("/user_{user_id}/update_age", response_model=UserData)
+@router.patch("/user_{user_id}/{password}/update_age", response_model=UserData)
 async def user_update_age(
     user_id: int,
+    user_password: str,
     update_data: UpdateUserAge,
     session: AsyncSession = Depends(get_session)
 ) -> UserData:
@@ -174,18 +182,71 @@ async def user_update_age(
     user_update = update_data.model_dump(exclude_unset=True)
     if not update_data:
         return db_user
+    if db_user.password == user_password:
+        try:
+            new_user_data = await update_user(session=session, user_id=user_id, update_data=user_update)
+            if new_user_data is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Не удалось обновить пользователя"
+                )
+                        
+            return new_user_data
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Ошибка обновления пользователя: {str(e)}"
+            )
 
-    try:
-        new_user_data = await update_user(session=session, user_id=user_id, update_data=user_update)
-        if new_user_data is None:
+@router.get("/{user_id}/posts", response_model=list[AllPostData])
+async def get_user_posts(
+    user_id: int,
+    session: AsyncSession = Depends(get_session),
+):
+    user = await find_user_by_id(session=session, user_id=user_id)
+    if user:
+        try:
+            posts = await user_s_posts_by_user_id(session=session, user_id=user_id)
+            return posts if posts else {"message": "posts not found"}
+        except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Не удалось обновить пользователя"
+                detail=f"У нас возникла проблема: {str(e)}, мы пытаемся ее исправить"
             )
-                    
-        return new_user_data
+    else:
+        raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"У нас возникла проблема: {str(e)}, мы пытаемся ее исправить"
+                )
+        # return {"message": "user not found"}
+
+
+@router.post("/create", response_model=UserData)
+async def user_create(
+    user: UserData,
+    session: AsyncSession = Depends(get_session)
+):
+    """
+    Создать нового пользователя.
+    """
+    try:
+        # Проверяем, существует ли пользователь с таким email
+        stmt = select(User).where(User.email == user.email)
+        result = await session.execute(stmt)
+        existing_user = result.scalar_one_or_none()
+        
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Пользователь с таким email уже существует"
+            )
+        
+        new_user = await create_user(session=session, input_user=user)
+        return new_user
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Ошибка обновления пользователя: {str(e)}"
+            detail=f"Ошибка создания пользователя: {str(e)}"
         )

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Network API</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <header class="main-header">
+            <h1><i class="fas fa-users"></i> Social Network API</h1>
+            <p class="subtitle">Учебный проект на FastAPI + PostgreSQL</p>
+        </header>
+
+        <!-- Навигация -->
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link active">
+                <i class="fas fa-home"></i> Главная
+            </a>
+            <a href="users.html" class="nav-link">
+                <i class="fas fa-user"></i> Пользователи
+            </a>
+            <a href="posts.html" class="nav-link">
+                <i class="fas fa-newspaper"></i> Посты
+            </a>
+            <a href="api.html" class="nav-link">
+                <i class="fas fa-code"></i> API Docs
+            </a>
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <section class="hero">
+                <h2>Добро пожаловать в социальную сеть!</h2>
+                <p>Этот проект демонстрирует работу REST API для социальной сети, созданного с помощью FastAPI.</p>
+            </section>
+
+            <div class="dashboard">
+                <div class="card" onclick="window.location.href='users.html?action=create'">
+                    <div class="card-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h3>Создать пользователя</h3>
+                    <p>Добавьте нового пользователя в систему</p>
+                    <div class="card-footer">
+                        <span class="api-method post">POST</span>
+                        <code>/user/create</code>
+                    </div>
+                </div>
+
+                <div class="card" onclick="window.location.href='users.html?action=search'">
+                    <div class="card-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Найти пользователя</h3>
+                    <p>Поиск по имени и фамилии</p>
+                    <div class="card-footer">
+                        <span class="api-method get">GET</span>
+                        <code>/user/get</code>
+                    </div>
+                </div>
+
+                <div class="card" onclick="window.location.href='posts.html?action=create'">
+                    <div class="card-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h3>Создать пост</h3>
+                    <p>Напишите и опубликуйте пост</p>
+                    <div class="card-footer">
+                        <span class="api-method post">POST</span>
+                        <code>/post/create</code>
+                    </div>
+                </div>
+
+                <div class="card" onclick="window.location.href='posts.html?action=list'">
+                    <div class="card-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <h3>Все посты</h3>
+                    <p>Просмотр всех опубликованных постов</p>
+                    <div class="card-footer">
+                        <span class="api-method get">GET</span>
+                        <code>/post/get_all</code>
+                    </div>
+                </div>
+            </div>
+
+            <section class="features">
+                <h2><i class="fas fa-cogs"></i> Возможности системы</h2>
+                <div class="feature-grid">
+                    <div class="feature">
+                        <i class="fas fa-database"></i>
+                        <h4>CRUD операции</h4>
+                        <p>Полный набор операций: Create, Read, Update, Delete</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-search"></i>
+                        <h4>Поиск и фильтрация</h4>
+                        <p>Поиск пользователей и постов по различным критериям</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>Валидация данных</h4>
+                        <p>Проверка email, паролей и других данных</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <h4>Быстрое API</h4>
+                        <p>FastAPI обеспечивает высокую производительность</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="api-status">
+                <h2><i class="fas fa-server"></i> Статус системы</h2>
+                <div id="status-container">
+                    <div class="status-item">
+                        <span class="status-label">API Сервер:</span>
+                        <span class="status-value" id="api-status">Проверка...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">База данных:</span>
+                        <span class="status-value" id="db-status">Не проверено</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" onclick="checkApiStatus()">
+                    <i class="fas fa-sync"></i> Проверить статус
+                </button>
+            </section>
+        </main>
+
+        <!-- Подвал -->
+        <footer class="main-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-network-wired"></i> Social Network API</h4>
+                    <p>Учебный проект по созданию REST API для социальной сети</p>
+                    <p>Версия 1.0.0</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Технологии</h4>
+                    <ul>
+                        <li>Python + FastAPI</li>
+                        <li>PostgreSQL + SQLAlchemy</li>
+                        <li>HTML/CSS/JavaScript</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Быстрые ссылки</h4>
+                    <a href="users.html">👥 Пользователи</a><br>
+                    <a href="posts.html">📝 Посты</a><br>
+                    <a href="api.html">📚 Документация</a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2024 Social Network API. Учебный проект.</p>
+                <p id="current-date"></p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

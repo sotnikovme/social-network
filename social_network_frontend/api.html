@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Docs - Social Network</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <h1><i class="fas fa-code"></i> Документация API</h1>
+            <p class="subtitle">Полная документация REST API для Social Network</p>
+        </header>
+
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-home"></i> Главная
+            </a>
+            <a href="users.html" class="nav-link">
+                <i class="fas fa-user"></i> Пользователи
+            </a>
+            <a href="posts.html" class="nav-link">
+                <i class="fas fa-newspaper"></i> Посты
+            </a>
+            <a href="api.html" class="nav-link active">
+                <i class="fas fa-code"></i> API Docs
+            </a>
+        </nav>
+
+        <main class="main-content">
+            <section class="intro">
+                <h2><i class="fas fa-book"></i> Введение</h2>
+                <p>Это REST API для социальной сети, написанное на FastAPI (Python). API предоставляет полный набор операций для управления пользователями и постами.</p>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-link"></i> Базовый URL</h3>
+                    <code class="api-url">http://localhost:8001</code>
+                    
+                    <h3><i class="fas fa-exchange-alt"></i> Формат данных</h3>
+                    <p>Все запросы и ответы в формате <strong>JSON</strong></p>
+                </div>
+            </section>
+
+            <div class="api-tabs">
+                <button class="api-tab-btn active" onclick="showApiSection('users')">
+                    <i class="fas fa-users"></i> Пользователи
+                </button>
+                <button class="api-tab-btn" onclick="showApiSection('posts')">
+                    <i class="fas fa-newspaper"></i> Посты
+                </button>
+                <button class="api-tab-btn" onclick="showApiSection('examples')">
+                    <i class="fas fa-code"></i> Примеры
+                </button>
+            </div>
+
+            <!-- Секция пользователей -->
+            <div id="api-users" class="api-section active">
+                <h2><i class="fas fa-users"></i> API пользователей</h2>
+                
+                <!-- Создание пользователя -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code class="endpoint-path">/user/create</code>
+                        <span class="endpoint-desc">Создание нового пользователя</span>
+                    </div>
+                    
+                    <div class="endpoint-body">
+                        <h4>Тело запроса (JSON):</h4>
+                        <pre><code class="language-json">{
+    "first_name": "Иван",
+    "second_name": "Петров",
+    "email": "ivan@example.com",
+    "password": "Test1234",
+    "age": 25,
+    "gender": "male"
+}</code></pre>
+                        
+                        <h4>Пример ответа:</h4>
+                        <pre><code class="language-json">{
+    "id": 1,
+    "first_name": "Иван",
+    "second_name": "Петров",
+    "email": "ivan@example.com",
+    "age": 25,
+    "gender": "male"
+}</code></pre>
+                        
+                        <button class="btn btn-sm" onclick="copyToClipboard('user-create-json')">
+                            <i class="fas fa-copy"></i> Копировать JSON
+                        </button>
+                        <div id="user-create-json" style="display: none;">{
+    "first_name": "Иван",
+    "second_name": "Петров",
+    "email": "ivan@example.com",
+    "password": "Test1234",
+    "age": 25,
+    "gender": "male"
+}</div>
+                    </div>
+                </div>
+
+                <!-- Поиск пользователей -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code class="endpoint-path">/user/get</code>
+                        <span class="endpoint-desc">Поиск пользователей</span>
+                    </div>
+                    
+                    <div class="endpoint-body">
+                        <h4>Параметры запроса:</h4>
+                        <ul>
+                            <li><code>first_name</code> (опционально) - имя для поиска</li>
+                            <li><code>second_name</code> (опционально) - фамилия для поиска</li>
+                            <li><code>skip</code> (опционально) - пропустить N записей (по умолчанию 0)</li>
+                            <li><code>limit</code> (опционально) - лимит записей (по умолчанию 20)</li>
+                        </ul>
+                        
+                        <h4>Пример запроса:</h4>
+                        <pre><code class="language-http">GET /user/get?first_name=Иван&limit=10</code></pre>
+                    </div>
+                </div>
+
+                <!-- Получение пользователя по ID -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code class="endpoint-path">/user/get_user_by_id</code>
+                        <span class="endpoint-desc">Получение пользователя по ID</span>
+                    </div>
+                    
+                    <div class="endpoint-body">
+                        <h4>Параметры запроса:</h4>
+                        <ul>
+                            <li><code>user_id</code> (обязательно) - ID пользователя</li>
+                        </ul>
+                        
+                        <h4>Пример запроса:</h4>
+                        <pre><code class="language-http">GET /user/get_user_by_id?user_id=1</code></pre>
+                    </div>
+                </div>
+
+                <!-- Обновление пользователя -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method patch">PATCH</span>
+                        <code class="endpoint-path">/user/user_{user_id}/update</code>
+                        <span class="endpoint-desc">Обновление пользователя</span>
+                    </div>
+                    
+                    <div class="endpoint-body">
+                        <h4>Тело запроса (JSON):</h4>
+                        <pre><code class="language-json">{
+    "user_password": "Test1234",
+    "update_data": {
+        "first_name": "НовоеИмя",
+        "age": 26
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Удаление пользователя -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method delete">DELETE</span>
+                        <code class="endpoint-path">/user/{user_id}/delete</code>
+                        <span class="endpoint-desc">Удаление пользователя</span>
+                    </div>
+                    
+                    <div class="endpoint-body">
+                        <h4>Тело запроса (JSON):</h4>
+                        <pre><code class="language-json">{
+    "input_password": "Test1234"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция постов -->
+            <div id="api-posts" class="api-section">
+                <h2><i class="fas fa-newspaper"></i> API постов</h2>
+                
+                <!-- Создание поста -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code class="endpoint-path">/post/create</code>
+                        <span class="endpoint-desc">Создание нового поста</span>
+                    </div>
+                    
+                    <div class="endpoint-body">
+                        <h4>Тело запроса (JSON):</h4>
+                        <pre><code class="language-json">{
+    "author_id": 1,
+    "title": "Мой первый пост",
+    "body": "Текст поста..."
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Получение поста по ID -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code class="endpoint-path">/post/get_by_id</code>
+                        <span class="endpoint-desc">Получение поста по ID</span>
+                    </div>
+                    
+                    <div class="endpoint-body">
+                        <h4>Параметры запроса:</h4>
+                        <ul>
+                            <li><code>post_id</code> (обязательно) - ID поста</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Поиск по заголовку -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code class="endpoint-path">/post/get_by_title</code>
+                        <span class="endpoint-desc">Поиск поста по заголовку</span>
+                    </div>
+                    
+                    <div class="endpoint-body">
+                        <h4>Параметры запроса:</h4>
+                        <ul>
+                            <li><code>title</code> (обязательно) - заголовок для поиска</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Посты пользователя -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code class="endpoint-path">/user/{user_id}/posts</code>
+                        <span class="endpoint-desc">Получение постов пользователя</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция примеров -->
+            <div id="api-examples" class="api-section">
+                <h2><i class="fas fa-code"></i> Примеры использования</h2>
+                
+                <div class="example-card">
+                    <h3><i class="fas fa-terminal"></i> Пример 1: Создать пользователя через curl</h3>
+                    <pre><code class="language-bash">curl -X POST "http://localhost:8001/user/create" \
+     -H "Content-Type: application/json" \
+     -d '{
+          "first_name": "Иван",
+          "second_name": "Петров",
+          "email": "ivan@example.com",
+          "password": "Test1234",
+          "age": 25,
+          "gender": "male"
+        }'</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3><i class="fab fa-js"></i> Пример 2: Найти пользователей через JavaScript</h3>
+                    <pre><code class="language-javascript">fetch('http://localhost:8001/user/get?first_name=Иван')
+    .then(response => response.json())
+    .then(users => console.log(users));</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3><i class="fab fa-python"></i> Пример 3: Создать пост через Python</h3>
+                    <pre><code class="language-python">import requests
+
+post_data = {
+    "author_id": 1,
+    "title": "Новый пост",
+    "body": "Текст поста"
+}
+
+response = requests.post(
+    "http://localhost:8001/post/create",
+    json=post_data
+)
+
+print(response.json())</code></pre>
+                </div>
+                
+                <div class="example-card">
+                    <h3><i class="fas fa-exchange-alt"></i> Коды HTTP ответов</h3>
+                    <table class="status-table">
+                        <tr><td>200 OK</td><td>Успешный запрос</td></tr>
+                        <tr><td>201 Created</td><td>Ресурс создан</td></tr>
+                        <tr><td>400 Bad Request</td><td>Ошибка в запросе</td></tr>
+                        <tr><td>404 Not Found</td><td>Ресурс не найден</td></tr>
+                        <tr><td>500 Internal Server Error</td><td>Ошибка сервера</td></tr>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer class="main-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-book"></i> Документация</h4>
+                    <p>Версия API: 1.0.0</p>
+                    <p>Обновлено: Январь 2024</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-tools"></i> Инструменты</h4>
+                    <a href="#" onclick="testEndpoint('user/create')">Тест API</a><br>
+                    <a href="#" onclick="openSwagger()">Swagger UI</a><br>
+                    <a href="#" onclick="openRedoc()">ReDoc</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-link"></i> Ссылки</h4>
+                    <a href="index.html">Главная</a><br>
+                    <a href="users.html">Пользователи</a><br>
+                    <a href="posts.html">Посты</a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2024 Social Network API. Учебный проект.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

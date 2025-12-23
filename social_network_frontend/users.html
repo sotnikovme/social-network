@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пользователи - Social Network</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <h1><i class="fas fa-users"></i> Управление пользователями</h1>
+            <p class="subtitle">CRUD операции для работы с пользователями</p>
+        </header>
+
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-home"></i> Главная
+            </a>
+            <a href="users.html" class="nav-link active">
+                <i class="fas fa-user"></i> Пользователи
+            </a>
+            <a href="posts.html" class="nav-link">
+                <i class="fas fa-newspaper"></i> Посты
+            </a>
+            <a href="api.html" class="nav-link">
+                <i class="fas fa-code"></i> API Docs
+            </a>
+        </nav>
+
+        <main class="main-content">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('create')">
+                    <i class="fas fa-user-plus"></i> Создать
+                </button>
+                <button class="tab-btn" onclick="showTab('search')">
+                    <i class="fas fa-search"></i> Поиск
+                </button>
+                <button class="tab-btn" onclick="showTab('update')">
+                    <i class="fas fa-edit"></i> Обновить
+                </button>
+                <button class="tab-btn" onclick="showTab('delete')">
+                    <i class="fas fa-trash"></i> Удалить
+                </button>
+            </div>
+
+            <!-- Вкладка создания -->
+            <div id="create-tab" class="tab-content active">
+                <div class="card">
+                    <h2><i class="fas fa-user-plus"></i> Создать нового пользователя</h2>
+                    <p class="description">Заполните форму для регистрации нового пользователя в системе</p>
+                    
+                    <form id="createUserForm" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="first_name"><i class="fas fa-user"></i> Имя *</label>
+                                <input type="text" id="first_name" name="first_name" 
+                                       placeholder="Введите имя" required>
+                                <div class="form-hint">Минимум 2 символа</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="second_name"><i class="fas fa-user"></i> Фамилия *</label>
+                                <input type="text" id="second_name" name="second_name" 
+                                       placeholder="Введите фамилию" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email"><i class="fas fa-envelope"></i> Email *</label>
+                            <input type="email" id="email" name="email" 
+                                   placeholder="example@mail.com" required>
+                            <div class="form-hint">На этот email придёт подтверждение</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password"><i class="fas fa-lock"></i> Пароль *</label>
+                            <input type="password" id="password" name="password" 
+                                   placeholder="Придумайте пароль" required>
+                            <div class="form-hint">Минимум 8 символов, буквы и цифры</div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="age"><i class="fas fa-birthday-cake"></i> Возраст *</label>
+                                <input type="number" id="age" name="age" 
+                                       min="1" max="150" value="25" required>
+                                <div class="form-hint">От 1 до 150 лет</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="gender"><i class="fas fa-venus-mars"></i> Пол *</label>
+                                <select id="gender" name="gender" required>
+                                    <option value="">Выберите пол</option>
+                                    <option value="male">Мужской</option>
+                                    <option value="female">Женский</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Создать пользователя
+                            </button>
+                            <button type="reset" class="btn btn-secondary">
+                                <i class="fas fa-undo"></i> Очистить форму
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="create-result" class="result-container"></div>
+                </div>
+            </div>
+
+            <!-- Вкладка поиска -->
+            <div id="search-tab" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-search"></i> Поиск пользователей</h2>
+                    <p class="description">Поиск пользователей по имени и фамилии</p>
+                    
+                    <form id="searchUserForm" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="search_first_name">Имя</label>
+                                <input type="text" id="search_first_name" 
+                                       placeholder="Введите имя">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="search_second_name">Фамилия</label>
+                                <input type="text" id="search_second_name" 
+                                       placeholder="Введите фамилию">
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Найти пользователей
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="loadAllUsers()">
+                                <i class="fas fa-list"></i> Показать всех
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="search-result" class="result-container">
+                        <div class="table-responsive">
+                            <table id="users-table" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Имя</th>
+                                        <th>Фамилия</th>
+                                        <th>Email</th>
+                                        <th>Возраст</th>
+                                        <th>Пол</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                    <!-- Данные будут загружены через JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="users-pagination" class="pagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Вкладка обновления -->
+            <div id="update-tab" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-edit"></i> Обновить пользователя</h2>
+                    <p class="description">Обновление информации о существующем пользователе</p>
+                    
+                    <form id="updateUserForm" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="update_id"><i class="fas fa-id-card"></i> ID пользователя *</label>
+                                <input type="number" id="update_id" 
+                                       placeholder="Введите ID пользователя" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="update_password"><i class="fas fa-key"></i> Пароль *</label>
+                                <input type="password" id="update_password" 
+                                       placeholder="Введите пароль пользователя" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="update_first_name">Новое имя</label>
+                                <input type="text" id="update_first_name" 
+                                       placeholder="Новое имя">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="update_second_name">Новая фамилия</label>
+                                <input type="text" id="update_second_name" 
+                                       placeholder="Новая фамилия">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="update_email">Новый Email</label>
+                            <input type="email" id="update_email" 
+                                   placeholder="Новый email">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="update_age">Новый возраст</label>
+                                <input type="number" id="update_age" 
+                                       min="1" max="150" placeholder="Новый возраст">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="update_gender">Новый пол</label>
+                                <select id="update_gender">
+                                    <option value="">Не изменять</option>
+                                    <option value="male">Мужской</option>
+                                    <option value="female">Женский</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sync"></i> Обновить пользователя
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="update-result" class="result-container"></div>
+                </div>
+            </div>
+
+            <!-- Вкладка удаления -->
+            <div id="delete-tab" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-trash"></i> Удалить пользователя</h2>
+                    <p class="description">Удаление пользователя из системы по ID</p>
+                    
+                    <form id="deleteUserForm" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="delete_id"><i class="fas fa-id-card"></i> ID пользователя *</label>
+                                <input type="number" id="delete_id" 
+                                       placeholder="Введите ID пользователя" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="delete_password"><i class="fas fa-key"></i> Пароль *</label>
+                                <input type="password" id="delete_password" 
+                                       placeholder="Введите пароль пользователя" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Удалить пользователя
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="delete-result" class="result-container"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="main-footer">
+            <p>© 2024 Social Network API | <a href="index.html">На главную</a></p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

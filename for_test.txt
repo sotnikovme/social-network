@@ -15,7 +15,7 @@
     "age": 25,
     "gender": "male",
     "password": "password123"
-  },
+  }
   {
     "first_name": "Мария",
     "second_name": "Иванова",
@@ -23,7 +23,7 @@
     "age": 22,
     "gender": "female",
     "password": "securePass456"
-  },
+  }
   {
     "first_name": "Алексей",
     "second_name": "Сидоров",
@@ -31,7 +31,7 @@
     "age": 30,
     "gender": "male",
     "password": "testPass789"
-  },
+  }
   {
     "first_name": "Екатерина",
     "second_name": "Смирнова",
@@ -39,7 +39,7 @@
     "age": 28,
     "gender": "female",
     "password": "katyaPass2023"
-  },
+  }
   {
     "first_name": "Дмитрий",
     "second_name": "Кузнецов",
@@ -47,7 +47,7 @@
     "age": 35,
     "gender": "male",
     "password": "dimaStrongPass"
-  },
+  }
   {
     "first_name": "Анна",
     "second_name": "Васильева",
@@ -55,7 +55,7 @@
     "age": 19,
     "gender": "female",
     "password": "annaSimplePass"
-  },
+  }
   {
     "first_name": "Сергей",
     "second_name": "Попов",
@@ -63,7 +63,7 @@
     "age": 40,
     "gender": "male",
     "password": "sergey40pass"
-  },
+  }
   {
     "first_name": "Ольга",
     "second_name": "Новикова",
@@ -71,7 +71,7 @@
     "age": 27,
     "gender": "female",
     "password": "olga27pass"
-  },
+  }
   {
     "first_name": "Максим",
     "second_name": "Федоров",
@@ -79,7 +79,7 @@
     "age": 32,
     "gender": "male",
     "password": "maxPowerPass"
-  },
+  }
   {
     "first_name": "Юлия",
     "second_name": "Морозова",
@@ -89,3 +89,29 @@
     "password": "juliaWinterPass"
   }
 ]
+
+
+
+
+
+
+
+
+
+{
+  "author_id": 3,
+  "title": "Мой новый проект на GitHub",
+  "body": "Выложил исходники небольшой утилиты для работы с API. Использовал asyncio и aiohttp. Ссылка в профиле."
+}
+  
+{
+  "author_id": 5,
+  "title": "Мои планы на выходные",
+  "body": "В субботу: 1. Закончить проект на FastAPI 2. Сходить в кафе 3. Посмотреть сериал. А у вас какие планы?"
+}
+
+{
+  "author_id": 5,
+  "title": "Утренняя зарядка для IT-специалиста",
+  "body": "Сидеть целый день за компьютером вредно. Делаю простые упражнения каждые 2 часа: разминка шеи, спины, кистей. Помогает!"
+}

@@ -4,6 +4,7 @@ from sqlalchemy.sql import func
 
 from datetime import datetime, date
 
+from app.secur import verify_password, get_password_hash
 from app.schemas import Gender
 
 class Base(DeclarativeBase):
@@ -24,10 +25,24 @@ class User(Base):
         back_populates="author",
         cascade="all, delete-orphan"
     )
+    
+    def verify_password(self, password: str) -> bool:
+        """Проверяет пароль"""
+        return verify_password(password, self.password)
+    
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now()
     )
+    @property
+    def password_hash(self):
+        return self.password
+    
+    @password_hash.setter
+    def password_hash(self, value: str):
+        """Автоматически хэширует пароль при установке"""
+        self.password = get_password_hash(value)
+        
     
 class Post(Base):
     __tablename__ = "posts"
@@ -43,7 +58,7 @@ class Post(Base):
     body: Mapped[str] = mapped_column(Text)
     # owner: Mapped[str] = mapped_column(String, nullable=False)
     likes:  Mapped[int] = mapped_column(Integer, default=0)
-    comments: Mapped[str] = mapped_column(Text)
+    comments: Mapped[str] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now()

@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 from builtins import Exception
 from typing import Optional
@@ -25,17 +26,12 @@ class ForUserRead(BaseModel):
     second_name: str = Field(max_length=100, description = "Фамилия")
     
 class ReadUserParams(ForUserRead):
-    email: str = Field(max_length=30, description = "Email")
+    email: EmailStr = Field(max_length=30, description = "Email")
     age: int = Field(gt=0, lt=151, description="Возраст") 
     gender: Gender
 
 class UserData(ReadUserParams):
-    # first_name: str = Field(max_length=100, description = "Имя")
-    # second_name: str = Field(max_length=100, description = "Фамилия")
-    # email: str = Field(max_length=30, description = "Email")
     password: str  = Field(max_length=30, min_length=8, description = "Пароль")
-    # age: int = Field(max_digits=150, description="Возраст")
-    # gender: Gender
     
     @field_validator("password")
     @classmethod
@@ -56,18 +52,53 @@ class UserData(ReadUserParams):
     #     if  value.count('@') != 1 or '.' not in value.split('@')[1]:
     #         raise InvalideEmailError()
 
+
 class UpdateUserName(BaseModel):
     first_name: Optional[str] = None
     second_name: Optional[str] = None
     
+    
 class UpdateUserEmail(BaseModel):
     email: Optional[EmailStr] = None
     
+    
 class UpdateUserAge(BaseModel):
     age: Optional[int] = None
+    
     
 class UpdateUser(BaseModel):
     first_name: Optional[str] = None
     second_name: Optional[str] = None
     email: Optional[EmailStr] = None
     age: Optional[int] = None
+
+
+class PostData(BaseModel):
+    author_id: int
+    title: str = Field(max_length=300, min_length=1, description="заголовок")
+    body: str = Field(min_length=1, description="Содержание")
+
+class AllPostData(PostData):
+    likes: int = 0
+    # comments: str | None = None
+    created_at: datetime
+
+
+class PostUpdate(BaseModel):
+    author_id: Optional[int] = None
+    title: Optional[str] = None
+    body: Optional[str] = None
+    likes: Optional[int] = None
+    created_at: Optional[datetime] = None
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None

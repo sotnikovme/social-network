@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Посты - Social Network</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <h1><i class="fas fa-newspaper"></i> Управление постами</h1>
+            <p class="subtitle">CRUD операции для работы с постами</p>
+        </header>
+
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-home"></i> Главная
+            </a>
+            <a href="users.html" class="nav-link">
+                <i class="fas fa-user"></i> Пользователи
+            </a>
+            <a href="posts.html" class="nav-link active">
+                <i class="fas fa-newspaper"></i> Посты
+            </a>
+            <a href="api.html" class="nav-link">
+                <i class="fas fa-code"></i> API Docs
+            </a>
+        </nav>
+
+        <main class="main-content">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showPostTab('create')">
+                    <i class="fas fa-edit"></i> Создать
+                </button>
+                <button class="tab-btn" onclick="showPostTab('list')">
+                    <i class="fas fa-list"></i> Все посты
+                </button>
+                <button class="tab-btn" onclick="showPostTab('search')">
+                    <i class="fas fa-search"></i> Поиск
+                </button>
+                <button class="tab-btn" onclick="showPostTab('update')">
+                    <i class="fas fa-pencil-alt"></i> Редактировать
+                </button>
+            </div>
+
+            <!-- Вкладка создания поста -->
+            <div id="create-post-tab" class="tab-content active">
+                <div class="card">
+                    <h2><i class="fas fa-edit"></i> Создать новый пост</h2>
+                    <p class="description">Напишите и опубликуйте новый пост</p>
+                    
+                    <form id="createPostForm" class="form">
+                        <div class="form-group">
+                            <label for="post_author_id"><i class="fas fa-user"></i> ID автора *</label>
+                            <input type="number" id="post_author_id" 
+                                   placeholder="Введите ваш ID" required>
+                            <div class="form-hint">Ваш ID пользователя в системе</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="post_title"><i class="fas fa-heading"></i> Заголовок *</label>
+                            <input type="text" id="post_title" 
+                                   placeholder="О чём ваш пост?" required>
+                            <div class="form-hint">Максимум 300 символов</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="post_body"><i class="fas fa-align-left"></i> Текст поста *</label>
+                            <textarea id="post_body" rows="6" 
+                                      placeholder="Напишите ваш пост здесь..." required></textarea>
+                            <div class="form-hint">Расскажите что-нибудь интересное!</div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Опубликовать пост
+                            </button>
+                            <button type="reset" class="btn btn-secondary">
+                                <i class="fas fa-undo"></i> Очистить
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="create-post-result" class="result-container"></div>
+                </div>
+            </div>
+
+            <!-- Вкладка всех постов -->
+            <div id="list-post-tab" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-list"></i> Все посты</h2>
+                    <p class="description">Просмотр всех опубликованных постов</p>
+                    
+                    <div class="filter-controls">
+                        <input type="text" id="post-search" placeholder="Поиск по заголовку..." 
+                               onkeyup="filterPosts()" class="form-input">
+                        <select id="post-sort" onchange="loadPosts()" class="form-select">
+                            <option value="newest">Сначала новые</option>
+                            <option value="oldest">Сначала старые</option>
+                        </select>
+                    </div>
+                    
+                    <div id="posts-list" class="posts-container">
+                        <!-- Посты будут загружены здесь -->
+                        <div class="loading">Загрузка постов...</div>
+                    </div>
+                    
+                    <div id="posts-pagination" class="pagination"></div>
+                </div>
+            </div>
+
+            <!-- Вкладка поиска поста -->
+            <div id="search-post-tab" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-search"></i> Поиск поста</h2>
+                    <p class="description">Поиск поста по ID или заголовку</p>
+                    
+                    <div class="form-group">
+                        <label>Тип поиска:</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="searchType" value="id" checked 
+                                       onchange="toggleSearchType()"> По ID
+                            </label>
+                            <label>
+                                <input type="radio" name="searchType" value="title" 
+                                       onchange="toggleSearchType()"> По заголовку
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <form id="searchPostForm" class="form">
+                        <div class="form-group" id="search-id-group">
+                            <label for="search_post_id">ID поста</label>
+                            <input type="number" id="search_post_id" 
+                                   placeholder="Введите ID поста">
+                        </div>
+                        
+                        <div class="form-group" id="search-title-group" style="display: none;">
+                            <label for="search_post_title">Заголовок</label>
+                            <input type="text" id="search_post_title" 
+                                   placeholder="Введите часть заголовка">
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Найти пост
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="search-post-result" class="result-container"></div>
+                </div>
+            </div>
+
+            <!-- Вкладка обновления поста -->
+            <div id="update-post-tab" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-pencil-alt"></i> Редактировать пост</h2>
+                    <p class="description">Обновление заголовка или текста существующего поста</p>
+                    
+                    <form id="updatePostForm" class="form">
+                        <div class="form-group">
+                            <label for="update_post_id"><i class="fas fa-id-card"></i> ID поста *</label>
+                            <input type="number" id="update_post_id" 
+                                   placeholder="Введите ID поста" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="update_post_title">Новый заголовок</label>
+                            <input type="text" id="update_post_title" 
+                                   placeholder="Новый заголовок поста">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="update_post_body">Новый текст</label>
+                            <textarea id="update_post_body" rows="4" 
+                                      placeholder="Новый текст поста"></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sync"></i> Обновить пост
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="update-post-result" class="result-container"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="main-footer">
+            <p>© 2024 Social Network API | <a href="index.html">На главную</a></p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
